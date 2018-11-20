@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet"  href="http://localhost:3000/stylesheets/login.css" type="text/css">
+
+</head>
+<body>
+  <div class="container ">
+    <div class="row">
+      <form action='verify-user/{{user.username}}' class="forgot-password" method='post'>
+        <h1>Security Check</h1>
+        <hr>
+        <h3 style="color:whitesmoke">{{user.security_question}}</h3>
+          <label>Answer</label>
+        	<input class="form-control" type="text" placeholder="Enter the Answer" name="security_answer">
+          <br/>
+            <input type="submit" value="Submit" class="btn btn-light">
+      </form>
+      </div>
+    </div>
+</body>
+</html>

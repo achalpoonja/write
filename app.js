@@ -7,13 +7,14 @@ var mongoose=require('mongoose');
 var bodyParser=require('body-parser');
 const cors=require('cors');
 const fileUpload=require('express-fileupload');
+const favicon=require('serve-favicon')
 
 
 var api = require('./routes/api');
 
 var app = express();
 
-app.use(cors());
+app.use(cors({origin:'*'}));
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
@@ -25,12 +26,13 @@ app.use(fileUpload())
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(favicon(path.join(__dirname, 'public', 'images','favicon.jpg')));
 
 app.use('/', api);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  next(createError(404));
+  res.render('notfound');
 });
 
 // error handler

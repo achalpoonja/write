@@ -5,35 +5,62 @@ const User=require('../models/user');
 const Blog=require('../models/blog');
 const Tag=require('../models/tags');
 const   fs =   require('fs');
+const validator=require('validator');
+const rn=require('random-number');
+var options={
+    min:1000000,
+    max:9999999,
+    integer:true
+}
+
+//landing page
+router.get('/',(req,res,next)=>{
+    res.render('home');
+});
+
+router.get('/login',(req,res,next)=>{
+    res.render('login');
+});
+
+
 
 //User Operations
 router.post('/login',(req,res,next)=>{
     username=req.body.username;
     password=req.body.password;
-    User.find({username:username},(err,user)=>{
+    User.findOne({username:username},(err,user)=>{
         if(err)
-            throw err;
+            res.render('login-error');
         if(user){
-            User.comparePassword(password, user[0].password, (err,isMatch)=>{
+            console.log(user)
+            User.comparePassword(password, user.password, (err,isMatch)=>{
                 if(err)
                     throw err
-                if(isMatch)
-                    res.json({success:true, msg:"Authentication Successful"});
+                if(isMatch){
+                    res.redirect('/home/'+username+rn(options))
+                }
                 else
-                    res.json({success:false, msg:"Authentication Failed!"});
+                    res.render('login-error');
             });
         }
+        else
+            res.render('login-error');
     });
 
 });
 
+router.get('/signup',(req,res,next)=>{
+    res.render('signup');
+})
 router.post('/signup',(req,res,next)=>{
     username=req.body.username;
-    User.find({username:username},(err, user)=>{
+    User.findOne({username:username},(err, user)=>{
         if(err)
             throw err;
-        if(!user)
-            res.send({success:false, message:"Username already exists"});
+        if(user)
+            res.render('signup-error');
+        if(!validator.isEmail(req.body.email))
+            res.render('signup-error')
         else{
             let profile_picture=req.files.profile_picture;
             profile_picture.mv('./public/profile-pictures/profile_'+username+'.jpg', (err)=>{
@@ -55,7 +82,7 @@ router.post('/signup',(req,res,next)=>{
                         if(err)
                             throw err;
                         else
-                            res.send({success:true, message:"User registered Successfully"});
+                            res.redirect('/home/'+user.username+rn(options))
                     });
                 }
             });
@@ -66,41 +93,57 @@ router.post('/signup',(req,res,next)=>{
     
 });
 
+router.get('/forgot-password',(req,res,next)=>{
+    res.render('forgot-password');
+})
+
 router.post('/check-user',(req,res,next)=>{
     username=req.body.username;
-    User.find({username:username}, (err, user)=>{
+    User.findOne({username:username}, (err, user)=>{
         if(err)
             throw err;
         if(user){
-            res.json(user);
+            res.render('verify', {'user':user});
+        }
+        else{
+            res.render('forgot-password_error')
         }
     });
 });
 
-router.post('/verify-user', (req,res,next)=>{
-    username=req.body.username;
-    security_question=req.body.security_question;
+router.post('/verify-user/:username', (req,res,next)=>{
+    username=req.params.username;
     security_answer=req.body.security_answer;
-    User.find({username:username},(err,user)=>{
+    User.findOne({username:username},(err,user)=>{
         if(err)
             throw err;
-        if(user[0].security_answer==security_answer){
-            res.json({'success':true});
+        if(user.security_answer==req.body.security_answer){
+            res.redirect('/change-password/'+user.username)
         }
     });
 });
 
-router.post('/change-password',(req,res,next)=>{
+router.get('/change-password/:username',(req,res,next)=>{
+    res.render('change-password', {'username':username});
+})
+
+router.post('/change-password/:username',(req,res,next)=>{
     password=req.body.password;
-    username=req.body.username;
+    username=req.params.username;
     User.updatePassword(username, password,(err, user)=>{
         if(err)
             throw err;
-        else   
-            res.json({'success':true, msg:'Password updated!'})
+        else{
+            console.log(user)
+            res.redirect('http://localhost:3000/login')
+        }
     });
 })
 //Home Page
+
+router.get('/home/:authtoken',(req,res,next)=>{
+    res.send("Success")
+});
 router.get('/posts',(req,res,next)=>{
     Blog.allPosts((err,post)=>{
         if(err)
@@ -219,6 +262,15 @@ router.post('/update-post/:id', (req,res,next)=>{
     });
 });
 });
+
+router.post('/delete-post/:id', (req,res,next)=>{
+    Blog.findByIdAndDelete(id, (err)=>{
+        if(err)
+            throw err;
+        else
+            res.redirect('home');
+    });
+})
 
 
 

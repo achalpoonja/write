@@ -1,0 +1,40 @@
+body, html {
+  height: 100%;
+  font-family: Arial, Helvetica, sans-serif;
+  background-image: url("http://localhost:3000/images/signupbg.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  color: white;
+
+}
+/* /* 
+* {
+  box-sizing: border-box;
+} */
+.container{
+float: right;
+border: 2px solid #202621;
+background-color:#0000002b;
+max-width:500px;
+}
+
+hr{
+border-color:whitesmoke;
+width:200%;
+}
+
+form{
+padding:25px;
+margin-left:10px;
+}
+a{
+color:black;
+}
+p{
+color:#004085;
+}
+a:hover{
+color:white;
+
+}
+
