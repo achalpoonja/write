@@ -23,6 +23,7 @@
     "nodemon": "^1.18.4",
     "npm": "^6.4.1",
     "random-number": "0.0.9",
+    "request": "^2.88.0",
     "serve-favicon": "^2.5.0",
     "validator": "^10.9.0"
   }

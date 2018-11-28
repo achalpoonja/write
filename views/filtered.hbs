@@ -1,0 +1,68 @@
+<link rel="stylesheet" type="text/css" href="http://localhost:3000/stylesheets/filter.css">
+<script>
+    tag_str="http://localhost:3000/filter/tags/{{user.username}}";
+    user_str="http://localhost:3000/filter/username/{{user.username}}";
+    function get_tag_link(tag_name){
+        document.getElementById('tag-link').href=tag_str+"/"+tag_name;
+    }
+    function get_user_link(tag_name){
+        document.getElementById('user-link').href=user_str+"/"+tag_name;
+    }
+</script>
+<body>
+    <nav class="navbar navbar-dark bg-dark">
+        <p class="write-logo">Write</p>
+        <div class="nav-list">
+                <ul class="navbar-nav">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="http://localhost:3000/home/{{user.username}}+{{ran}}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <div class="dropdown">
+                        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">More
+                        <span class="caret"></span></button>
+                        <ul class="dropdown-menu">
+                            <li><a href="http://localhost:3000/myaccount/{{user.username}}"><img src={{user.profile_picture}} class='profile-image'>Your Posts</a></li>
+                            <li><a href="http://localhost:3000/change-password/myuser/{{user.username}}">Change Password</a></li>
+                            <li><a href='http://localhost:3000/login'>Logout</a></li>
+                        </ul>
+                        </div>
+                    </li>
+                </ul>
+        </div>
+    </nav>
+    <div class="row">
+        <div class="col-md-6">
+            {{#if post_user}}
+                <div class="user-container">
+                   <img src={{post_user.profile_picture}}><br/>
+                   <h3>{{post_user.full_name}}</h3>
+                   <h4>{{post_user.tagline}}</h4>
+                </div>
+            {{else}}
+                <h1 style="text-align:center; color:whitesmoke;">Filter Parameter: #{{filter}}</h1>
+            {{/if}}
+            
+            
+        </div>
+        <div class="col-md-6">
+            <div class="container">
+                <h1 style="color:whitesmoke;">Microtales here..</h1><br/> 
+                        {{#each content}}
+                        <div class="each-post-container">
+                            <h1>{{this.title}}</h1><br/>
+                            <h3>{{this.content}}</h3><br/>
+                            <h4><a href="javascript:get_tag_link('{{this.tag}}');" id="tag-link">#{{this.tag}}</a> <a href="javascript:get_user_link('{{this.username}}');" id="user-link">{{this.username}}</a></h4>
+                        </div>
+                        {{/each}}
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="footer-container">
+            <h3>Write is a platform to express your self in fewer words. Here at write, we believe in giving wings to your poetic dreams. Cheers!</h3>
+            <h4>Developer: Achal</h4>
+        </div>
+    </div>
+    
+</body>

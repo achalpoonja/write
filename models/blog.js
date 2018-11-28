@@ -26,7 +26,7 @@ module.exports.deleteBlogPost=(blogPost,callback)=>{
 }
 
 module.exports.allPosts=(callback)=>{
-    Blog.find({}, callback);
+    Blog.find({},callback);
 }
 
 module.exports.filterUsingTag=(tag,callback)=>{

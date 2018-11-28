@@ -1,0 +1,20 @@
+@import url('http://localhost:3000/stylesheets/home.css');
+
+body{
+    background-image:url("http://localhost:3000/images/profile.jpg");
+}
+.profile-picture-block{
+    text-align: end;
+}
+.profile-picture{
+    border-radius: 50%;
+    width:200px;
+    height:200px;
+}
+.profile-info{
+    color:whitesmoke;
+}
+
+.post-container{
+    border:none;
+}

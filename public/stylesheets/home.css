@@ -1,0 +1,68 @@
+body{
+    background-image:url("http://localhost:3000/images/login.jpg");
+    font-family: 'Indie Flower', cursive;
+}
+.write-logo{
+    font-family: 'Warnes', cursive;
+    color:whitesmoke;
+    font-size:30px;
+    float:right;
+}
+.nav{
+    background-color: #0a08082b !important;
+}
+.nav-list{
+    float:right;
+    color:black;
+}
+.profile-image{
+    border-radius: 50%;
+    border:1px solid darkslategray;
+    width:40px;
+    height:40px;
+}
+.dropdown-menu{
+    background-color:#343a40!important;
+    border-color: transparent;
+}
+.dropdown-menu a{
+    text-decoration: none !important;
+    display:block;
+    color:whitesmoke;
+}
+.dropdown-menu a:hover{
+    color:darkslategray;
+}
+.create-blog-post{
+    padding:25px;
+    color:whitesmoke;
+    background-color: #0a08082b;
+    border:2px solid black;
+    font-family: 'Indie Flower', cursive;
+}
+.post-container, .tag-container{
+    border-right:1px solid black;
+    padding:50px;
+    font-family: 'Indie Flower', cursive;
+    color:whitesmoke;
+}
+.each-post-container, .each-tag-container{
+    border:1px solid black;
+    color:whitesmoke;
+    background-color: #0a08082b;
+    padding:50px;
+    margin-bottom:20px;
+    border-top-left-radius: 20%;
+    border-top-right-radius: 20%;
+    border-bottom-left-radius: 20%;
+    border-bottom-right-radius: 20%;
+}
+.each-post-container a, .each-tag-container a{
+    color:white;
+}
+.footer-container{
+    background-color:#343a40!important;
+    color:whitesmoke;
+    font-family: 'Indie Flower', cursive;
+    padding:50px;
+}

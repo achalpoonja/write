@@ -1,0 +1,88 @@
+<link href="https://fonts.googleapis.com/css?family=Warnes" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Indie+Flower" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="http://localhost:3000/stylesheets/home.css">
+<script>
+    tag_str="http://localhost:3000/filter/tags/{{user.username}}";
+    user_str="http://localhost:3000/filter/username/{{user.username}}";
+    function get_tag_link(tag_name){
+        window.location=tag_str+"/"+tag_name;
+    }
+    function get_user_link(tag_name){
+        window.location=user_str+"/"+tag_name;
+    }
+</script>
+<body>
+    <nav class="navbar navbar-dark bg-dark">
+        <p class="write-logo">Write</p>
+        <div class="nav-list">
+                <ul class="navbar-nav">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <div class="dropdown">
+                        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">More
+                        <span class="caret"></span></button>
+                        <ul class="dropdown-menu">
+                            <li><a href="http://localhost:3000/myaccount/{{user.username}}"><img src={{user.profile_picture}} class='profile-image'>Your Posts</a></li>
+                            <li><a href="http://localhost:3000/change-password/myuser/{{user.username}}">Change Password</a></li>
+                            <li><a href='http://localhost:3000/login'>Logout</a></li>
+                        </ul>
+                        </div>
+                    </li>
+                </ul>
+        </div>
+    </nav>
+<div class="content-container">
+        <div class="create-blog-post">
+            <div class="row">
+                <div class="col-md-12">
+                    <form action='http://localhost:3000/create-blog' method='post' class='create-blog-post' name='create-blog'>
+                        <h1>What's on your mind?</h1>
+                        <input class="form-control" type="hidden" name="username" value='{{user.username}}'>
+                        <label>Title:</label><br>
+                        <input class="form-control" type="text" placeholder="Title..." name="title">
+                        <br>
+                        <label>Content:</label><br>
+                        <input class="form-control" type="text" placeholder="Put your blog post here..." name="content">
+                        <br>
+                        <label>Tag:</label><br>
+                        <input class="form-control" type="text" placeholder="#TAG (only put one tag prepended by #)" name="tag">
+                        <br>
+                        <input class="btn btn-dark" type="submit" name="Post" value="Post">
+                    </form>
+                </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="post-container">
+                <h1>Microtales here..</h1><br/>  
+                {{#each posts}}
+                <div class="each-post-container">
+                    <h1>{{this.title}}</h1><br/>
+                    <h3>{{this.content}}</h3><br/>
+                    <h4><a href="javascript:get_tag_link('{{this.tag}}');" id="tag-link">#{{this.tag}}</a> <a href="javascript:get_user_link('{{this.username}}');" id="user-link">{{this.username}}</a></h4>
+                </div>
+                {{/each}}
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="tag-container">
+                <h1>Popular Tags..</h1><br/>
+                {{#each tags}}
+                <div class="each-tag-container">
+                    <h1><a href="javascript:get_tag_link('{{this.tag_name}}');" id="tag-link">#{{this.tag_name}}({{this.number_of_posts}})</a></h1>
+                </div>
+                {{/each}}
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="footer-container">
+            <h3>Write is a platform to express your self in fewer words. Here at write, we believe in giving wings to your poetic dreams. Cheers!</h3>
+            <h4>Developer: Achal</h4>
+        </div>
+    </div>
+</div>
+</body>

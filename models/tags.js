@@ -28,6 +28,9 @@ module.exports.reduceTag=(tag_name, callback)=>{
         if(tag){
             var num=tag.number_of_posts;
             num=num-1;
+            if(num==0){
+                Tag.findOneAndRemove({tag_name:tag_name},callback);
+            }
             Tag.findOneAndUpdate({tag_name:tag_name},{number_of_posts:num}, callback);
         }
     });

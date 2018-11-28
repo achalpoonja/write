@@ -1,0 +1,46 @@
+<link rel="stylesheet" type="text/css" href="http://localhost:3000/stylesheets/myprofile.css">
+<body>
+    <nav class="navbar navbar-dark bg-dark">
+        <p class="write-logo">Write</p>
+        <div class="nav-list">
+                <ul class="navbar-nav">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <div class="dropdown">
+                        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">More
+                        <span class="caret"></span></button>
+                        <ul class="dropdown-menu">
+                             <li><a href="http://localhost:3000/myaccount/{{user.username}}"><img src={{user.profile_picture}} class='profile-image'>Your Posts</a></li>
+                            <li><a href="http://localhost:3000/change-password/myuser/{{user.username}}">Change Password</a></li>
+                            <li><a href='http://localhost:3000/login'>Logout</a></li>
+                        </ul>
+                        </div>
+                    </li>
+                </ul>
+        </div>
+    </nav>
+    <div class="content-container">
+        <div class="create-blog-post">
+            <div class="row">
+                <div class="col-md-12">
+                    <form action='http://localhost:3000/update-post/{{post._id}}' method='post' class='create-blog-post' name='create-blog'>
+                        <h1>Edit Blog Post</h1>
+                        <input class="form-control" type="hidden" name="username" value='{{user.username}}'>
+                        <label>Title:</label><br>
+                        <input class="form-control" type="text" placeholder="Title..." name="title" value='{{post.title}}'>
+                        <br>
+                        <label>Content:</label><br>
+                        <input class="form-control" type="text" placeholder="Put your blog post here..." name="content" value='{{post.content}}'>
+                        <br>
+                        <label>Tag:</label><br>
+                        <input class="form-control" type="text" placeholder="#TAG (only put one tag prepended by #)" name="tag" value='{{post.tag}}'>
+                        <br>
+                        <input class="btn btn-dark" type="submit" name="Update" value="Update">
+                        <a href="http://localhost:3000/myaccount/{{user.username}}"><buttton class="btn btn-dark">Go Back!</buttton></a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>

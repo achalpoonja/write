@@ -7,12 +7,13 @@ const Tag=require('../models/tags');
 const   fs =   require('fs');
 const validator=require('validator');
 const rn=require('random-number');
+const request=require('request');
 var options={
     min:1000000,
     max:9999999,
     integer:true
 }
-
+const loggedinuser="";
 //landing page
 router.get('/',(req,res,next)=>{
     res.render('home');
@@ -37,7 +38,7 @@ router.post('/login',(req,res,next)=>{
                 if(err)
                     throw err
                 if(isMatch){
-                    res.redirect('/home/'+username+rn(options))
+                    res.redirect('/home/'+username+'+'+rn(options))
                 }
                 else
                     res.render('login-error');
@@ -82,7 +83,7 @@ router.post('/signup',(req,res,next)=>{
                         if(err)
                             throw err;
                         else
-                            res.redirect('/home/'+user.username+rn(options))
+                            res.redirect('/home/'+user.username+'+'+rn(options));
                     });
                 }
             });
@@ -124,8 +125,13 @@ router.post('/verify-user/:username', (req,res,next)=>{
 });
 
 router.get('/change-password/:username',(req,res,next)=>{
-    res.render('change-password', {'username':username});
+    res.render('change-password', {'username':req.params.username});
 })
+
+router.get('/change-password/myuser/:username',(req,res,next)=>{
+    res.render('change-password-myuser', {username:req.params.username});
+})
+
 
 router.post('/change-password/:username',(req,res,next)=>{
     password=req.body.password;
@@ -135,32 +141,54 @@ router.post('/change-password/:username',(req,res,next)=>{
             throw err;
         else{
             console.log(user)
-            res.redirect('http://localhost:3000/login')
+            res.redirect('http://localhost:3000/')
+        }
+    });
+});
+
+router.post('/change-password/myuser/:username',(req,res,next)=>{
+    password=req.body.password;
+    username=req.params.username;
+    User.updatePassword(username, password,(err, user)=>{
+        if(err)
+            throw err;
+        else{
+            console.log(user)
+            res.redirect('http://localhost:3000/home/'+username+'+'+rn(options));
         }
     });
 })
 //Home Page
 
 router.get('/home/:authtoken',(req,res,next)=>{
-    res.send("Success")
-});
-router.get('/posts',(req,res,next)=>{
-    Blog.allPosts((err,post)=>{
-        if(err)
-            throw err;
-        if(post)
-            res.json(post);
+    Blog.allPosts((err,posts)=>{
+    if(err)
+        throw err;
+    if(posts){
+        Tag.find({},(err,tags)=>{
+            if(err)
+                throw err;
+            if(tags){
+                User.findOne({"username":req.param('authtoken').split('+')[0]},(err,user)=>{
+                   if(err)
+                    throw err;
+                    if(user){
+                        for(i=0;i<posts.length;i++){
+                            posts[i].tag=posts[i].tag.split('#')[1];
+                        }
+                        for(i=0;i<tags.length;i++){
+                            tags[i].tag_name=tags[i].tag_name.split('#')[1];
+                        }
+                        tags.sort({number_of_posts:-1});
+                        res.render('home',{posts:posts, tags:tags, user:user});
+                    }
+                });
+            }
+        });
+    }
     });
 });
 
-router.get('/tags', (req,res,next)=>{
-Tag.find({}, (err,tags)=>{
-    if(err)
-        throw err;
-    if(tags)
-        res.json(tags);
-    });
-});
 
 router.post('/create-blog',(req,res,next)=>{
     let blogPost={
@@ -170,10 +198,6 @@ router.post('/create-blog',(req,res,next)=>{
         tag:req.body.tag,
         timestamp: new Date
     };
-    Blog.find({title:blogPost.title},(err,blog)=>{
-        if(err)
-            throw err;
-        if(!blog){
         Blog.addBlogPost(blogPost, (err,blog_post)=>{
             if(err)
                 throw err;
@@ -181,53 +205,79 @@ router.post('/create-blog',(req,res,next)=>{
                 Tag.addTag(blogPost.tag, (err,tag)=>{
                     if(err)
                         throw err;
-                    else
-                        res.json({success:true, message:"Blog Posted Successfully!"});
+                    else{
+                        res.redirect('http://localhost:3000/home/'+blog_post.username+'+'+rn(options));
+                    }
                 })
             }
         });
-    }
     });
-});
 
-router.get('/filter/tags/:tags',(req,res,next)=>{
-    Blog.filterUsingTag("#"+req.params.tags, (err,tag)=>{
+router.get('/filter/tags/:loginusername/:tags',(req,res,next)=>{
+    User.findOne({username:req.params.loginusername},(err,user)=>{
+    Blog.filterUsingTag("#"+req.params.tags, (err,blog)=>{
         if(err)
             throw err;
-        if(tag)
-            res.json(tag);
+        if(blog){
+            for(i=0;i<blog.length;i++){
+                blog[i].tag=blog[i].tag.split('#')[1];
+            }
+            res.render('filtered',{content:blog,user:user, ran:rn(options), filter:req.params.tags});
+    
+        }    
+    });
     });
 });
 
-router.get('/filter/username/:username',(req,res,next)=>{
-    console.log(req.params.username);
+router.get('/filter/username/:loginusername/:username',(req,res,next)=>{
+    User.findOne({username:req.params.loginusername},(err,user)=>{
     Blog.find({username:req.params.username}, (err,blog)=>{
+        User.findOne({username:req.params.username},(err,post_user)=>{
         if(err)
             throw err;
-        else
-            res.json(blog);
-    })
-});
-
-router.get('/blog-post/:username/:title', (req,res,next)=>{
-    Blog.findOne({username:req.params.username, title:req.params.title}, (err, blog)=>{
-        if(err)
-            throw err;
-        else
-            res.json(blog)
+        else{
+            for(i=0;i<blog.length;i++){
+                blog[i].tag=blog[i].tag.split('#')[1];
+            }
+            res.render('filtered',{content:blog, user:user, ran:rn(options),filter:req.params.username, post_user:post_user});
+        }
+        });
+    });
     });
 });
 
+router.get('/myaccount/:username',(req,res,next)=>{
+    User.findOne({username:req.params.username},(err,user)=>{
+        if(err)
+            throw err;
+        if(user){
+            Blog.find({username:req.params.username},(err,posts)=>{
+                if(err)
+                    throw err;
+                else{
+                    for(i=0;i<posts.length;i++){
+                        posts[i].tag=posts[i].tag.split('#')[1];
+                    }
+                    res.render('myprofile',{user:user, posts:posts, ran:rn(options)});
+                }
+            });
+        }
+    });
+});
 
 //Update and Delete
-router.get('/blog-post/:id', (req,res,next)=>{
-    Blog.findByIdAndRemove(req.params.id, (err)=>{
-        if(err)
-            throw err;
-        else
-            res.json({success:true, msg:"Deleted blog post!"});
-    })
+router.get('/update-post/:username/:id',(req,res,next)=>{
+    User.findOne({username:req.params.username},(err,user)=>{
+        Blog.findOne({_id:req.params.id},(err,post)=>{
+            if(err)
+                throw err;
+            if(post){
+                res.render('edit-post',{user:user, post:post});
+            }
+        });
 });
+});
+
 
 router.post('/update-post/:id', (req,res,next)=>{
     let blogPost={
@@ -248,11 +298,12 @@ router.post('/update-post/:id', (req,res,next)=>{
         if(err)
             throw err;
         if(blog){
-            Tag.addTag(blogPost.tag, (err,blog)=>{
+            Tag.addTag(blogPost.tag, (err,tag)=>{
                 if(err)
                     throw err;
-                else
-                res.json({success:true, msg:"Blog updated!"});
+                else{
+                res.redirect('http://localhost:3000/myaccount/'+blog.username);
+                }
             })
         }
         else
@@ -263,14 +314,26 @@ router.post('/update-post/:id', (req,res,next)=>{
 });
 });
 
-router.post('/delete-post/:id', (req,res,next)=>{
-    Blog.findByIdAndDelete(id, (err)=>{
+router.get('/delete-post/:username/:id', (req,res,next)=>{
+    Blog.findOne({_id:req.params.id},(err,blog)=>{
+        if(err)
+            throw err;
+        if(blog)
+            Tag.reduceTag(blog.tag,(err,tag)=>{
+                if(err)
+                    throw err;
+                else{
+          
+    Blog.findByIdAndDelete(blog._id, (err)=>{
         if(err)
             throw err;
         else
-            res.redirect('home');
+            res.redirect("http://localhost:3000/myaccount/"+req.params.username);
     });
-})
+}
+});
+});
+});
 
 
 
