@@ -6,8 +6,9 @@
         window.location=update_url+"/"+post_id;
     }
     function delete_post(post_id){
+        console.log(delete_url+post_id);
         confirmation=confirm("Are you sure you want to delete this post?")
-        if(confirmation==true){
+        if(confirmation==true){    
             window.location=delete_url+post_id;
         }
         else{
@@ -65,5 +66,5 @@
         <div class="footer-container">
             <h3>Write is a platform to express your self in fewer words. Here at write, we believe in giving wings to your poetic dreams. Cheers!</h3>
             <h4>Developer: Achal</h4>
-        </div>
+        </div>username
     </div>

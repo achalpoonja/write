@@ -3,22 +3,35 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet"  href="http://localhost:3000/stylesheets/signup.css" type="text/css">
-
+<script>
+  function password_validate(){
+    if((document.getElementById('pd').value).length<8){
+      document.getElementById('error-password').innerHTML="Password should be 8 characters long";
+    }
+  }
+  function email_validate(){
+    var pattern = new RegExp('[a-z]+@[a-z]+.[a-z]+');
+    if(!pattern.test(document.getElementById('email').value))
+      document.getElementById('error-email').innerHTML="Please enter a proper email address";
+  }
+</script>
 </head>
 <body>
   <div class="container ">
     <div class="row">
-      <form action='signup' class="signup_form" method='post' enctype="multipart/form-data">
+      <form action='' class="signup_form" method='post' enctype="multipart/form-data" id='signup-form'>
         <h1>Signup</h1>
         <hr>
           <label>Username</label>
         	<input class="form-control" type="text" placeholder="Enter Username" name="username">
           <label>Password</label>
-        	<input class="form-control" type="password" placeholder="Enter password" name="password">
+          <p id="error-password" style="color:red;"></p>
+        	<input class="form-control" type="password" id="pd" placeholder="Enter password" name="password" onchange="password_validate()">
           <label>Full Name</label>
         	<input class="form-control" type="text" placeholder="Enter Full Name" name="full_name">
           <label>Email</label>
-        	<input class="form-control" type="email" placeholder="Enter Email ID" name="email">
+          <p id="error-email" style="color:red;"></p>
+        	<input class="form-control" type="email" id='email' placeholder="Enter Email ID" name="email" onchange="email_validate()">
           <label>Profile Picture</label>
         	<input class="form-control" type="file" placeholder="Choose Profile Picture" name="profile_picture">
           <label>Tagline</label>
@@ -28,7 +41,7 @@
           <label>Security Answer</label>
         	<input class="form-control" type="text" placeholder="Enter Security Answer" name="security_answer">
           <br/>
-            <input type="submit" value="SIGNUP" class="btn btn-light">
+            <input type="submit" value="SIGNUP" class="btn btn-light" onclick="javascript:validate();">
       </form>
       </div>
     </div>

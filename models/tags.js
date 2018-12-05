@@ -31,7 +31,9 @@ module.exports.reduceTag=(tag_name, callback)=>{
             if(num==0){
                 Tag.findOneAndRemove({tag_name:tag_name},callback);
             }
+            else{
             Tag.findOneAndUpdate({tag_name:tag_name},{number_of_posts:num}, callback);
+            }
         }
     });
 }
